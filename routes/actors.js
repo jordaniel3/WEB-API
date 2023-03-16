@@ -1,14 +1,15 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/actors');
+const {validateActor} = require('../controllers/validation');
 const router = Router({
     prefix: '/api/v1/actors'
 });
 
 router.get('/', getAll);
-router.post('/', bodyParser(), createActor);
+router.post('/', bodyParser(),validateActor, createActor);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', bodyParser(), updateActor);
+router.put('/:id([0-9]{1,})', bodyParser(),validateActor, updateActor);
 router.del('/:id([0-9]{1,})', deleteActor);
 
 async function getAll(ctx) {

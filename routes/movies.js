@@ -1,14 +1,15 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/movies');
+const {validateMovie} = require('../controllers/validation');
 const router = Router({
     prefix: '/api/v1/movies'
 });
 
 router.get('/', getAll);
-router.post('/', bodyParser(), createMovie);
+router.post('/', bodyParser(),validateMovie, createMovie);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', bodyParser(), updateMovie);
+router.put('/:id([0-9]{1,})', bodyParser(),validateMovie, updateMovie);
 router.del('/:id([0-9]{1,})', deleteMovie);
 
 async function getAll(ctx) {
