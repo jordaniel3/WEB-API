@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
+const etag = require('etag');
 const model = require('../models/cast');
 const router = Router({
     prefix: '/api/v1/cast'
@@ -32,7 +33,19 @@ async function getById(ctx) {
 
 	if (cast.length) {
 
-		ctx.body = cast;
+		const data = cast[0];
+		const {['if-modified-since']: if_modified_since} = ctx.headers;
+		if (if_modified_since) {
+			const since = Date.parse(if_modified_since);
+			const modified = new Date(data.modified);
+			if (modified < since) {
+				ctx.status = 304;
+			}
+		}
+
+		ctx.body = data;;
+		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
+		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 
 	}
 

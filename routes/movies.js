@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/movies');
+const etag = require('etag');
 const {validateMovie} = require('../controllers/validation');
 const router = Router({
     prefix: '/api/v1/movies'
@@ -33,7 +34,19 @@ async function getById(ctx) {
 
 	if (movie.length) {
 
-		ctx.body = movie[0];
+		const data = movie[0];
+		const {['if-modified-since']: if_modified_since} = ctx.headers;
+		if (if_modified_since) {
+			const since = Date.parse(if_modified_since);
+			const modified = new Date(data.modified);
+			if (modified < since) {
+				ctx.status = 304;
+			}
+		}
+
+		ctx.body = data;;
+		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
+		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 
 	}
 

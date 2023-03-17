@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/reviews');
+const etag = require('etag');
 const {validateReview} = require('../controllers/validation');
 const router = Router({
     prefix: '/api/v1/reviews'
@@ -33,7 +34,19 @@ async function getById(ctx) {
 
 	if (review.length) {
 
-		ctx.body = review[0];
+		const data = review[0];
+		const {['if-modified-since']: if_modified_since} = ctx.headers;
+		if (if_modified_since) {
+			const since = Date.parse(if_modified_since);
+			const modified = new Date(data.modified);
+			if (modified < since) {
+				ctx.status = 304;
+			}
+		}
+
+		ctx.body = data;;
+		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
+		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 
 	}
 

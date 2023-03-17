@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "etag": "^1.8.1",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.4.0",
     "koa-router": "^12.0.0",
