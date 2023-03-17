@@ -17,7 +17,7 @@ exports.add = async function add(reviewer) {
 	return data;
 } //delete a article in the database 
 exports.deleteReviewer = async function deleteReviewer(id) {
-	let query = "DELETE FROM Reviewers WHERE condition ?;";
+	let query = "DELETE FROM Reviewers WHERE Id =  ?;";
 	let data = await db.run_query(query, id);
 	return data;
 } //update a article in the database 

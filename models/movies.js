@@ -17,7 +17,7 @@ exports.add = async function add(movie) {
 	return data;
 } //delete a movie in the database 
 exports.deleteMovie = async function deleteMovie(id) {
-	let query = "DELETE FROM Movies WHERE condition ?;";
+	let query = "DELETE FROM Movies WHERE id = ?;";
 	let data = await db.run_query(query, id);
 	return data;
 } //update a movie in the database 

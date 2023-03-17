@@ -17,7 +17,7 @@ exports.add = async function add(actor) {
 	return data;
 } //delete a actor in the database 
 exports.deleteActor = async function deleteActor(id) {
-	let query = "DELETE FROM Actors WHERE condition ?;";
+	let query = "DELETE FROM Actors WHERE Id = ?;";
 	let data = await db.run_query(query, id);
 	return data;
 } //update an article in the database 

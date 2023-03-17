@@ -6,6 +6,7 @@ const {
 const movieSchema = require('../schemas/movies.schema');
 const actorSchema = require('../schemas/actor.schema ');
 const reviewSchema = require('../schemas/review.schema');
+const userSchema = require('../schemas/user.schema');
 
 const v = new Validator();
 const makeKoaValidator = schema => {
@@ -51,3 +52,4 @@ const makeKoaValidator = schema => {
     exports.validateMovie =  makeKoaValidator(movieSchema)
     exports.validateActor =  makeKoaValidator(actorSchema)
     exports.validateReview =  makeKoaValidator(reviewSchema)
+    exports.validateUser =  makeKoaValidator(userSchema)

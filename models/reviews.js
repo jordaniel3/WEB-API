@@ -17,7 +17,7 @@ exports.add = async function add(review) {
 	return data;
 } //delete a review in the database 
 exports.deleteReview = async function deleteReview(id) {
-	let query = "DELETE FROM Reviews WHERE condition ?;";
+	let query = "DELETE FROM Reviews WHERE MovieID = ?;";
 	let data = await db.run_query(query, id);
 	return data;
 } //update a review in the database 
