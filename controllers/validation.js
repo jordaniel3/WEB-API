@@ -3,6 +3,7 @@ const {
     ValidationError
 } = require('jsonschema');
 
+const movieSchemaPUT = require('../schemas/movies.schemaPUT');
 const movieSchema = require('../schemas/movies.schema');
 const actorSchema = require('../schemas/actor.schema ');
 const reviewSchema = require('../schemas/review.schema');
@@ -50,6 +51,7 @@ const makeKoaValidator = schema => {
     
     }
     exports.validateMovie =  makeKoaValidator(movieSchema)
+    exports.validateMoviePUT =  makeKoaValidator(movieSchemaPUT)
     exports.validateActor =  makeKoaValidator(actorSchema)
     exports.validateReview =  makeKoaValidator(reviewSchema)
     exports.validateUser =  makeKoaValidator(userSchema)

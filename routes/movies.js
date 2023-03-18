@@ -1,10 +1,13 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/movies');
+const {getOMDBdata} = require('../integration/OMDB');
+const omdb = require('../integration/OMDBmodel');
 const etag = require('etag');
 const can = require('../permissions/actors');
 const auth = require('../controllers/auth');
-const {validateMovie} = require('../controllers/validation');
+const {validateMovie,validateMoviePUT} = require('../controllers/validation');
+
 const router = Router({
     prefix: '/api/v1/movies'
 });
@@ -12,7 +15,7 @@ const router = Router({
 router.get('/', getAll);
 router.post('/', bodyParser(),validateMovie,auth, createMovie);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', bodyParser(),validateMovie,auth, updateMovie);
+router.put('/:id([0-9]{1,})', bodyParser(),validateMoviePUT,auth, updateMovie);
 router.del('/:id([0-9]{1,})',auth, deleteMovie);
 
 async function getAll(ctx) {
@@ -31,6 +34,7 @@ async function getAll(ctx) {
 async function getById(ctx) {
 
 	let id = ctx.params.id;
+	console.log(ctx.headers)
 
 	let movie = await model.getById(id);
 
@@ -55,23 +59,46 @@ async function getById(ctx) {
 }
 
 async function createMovie(ctx) {
-
+	console.log(ctx.request.body)
 	const permission = can.create(ctx.state.user);
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
 	} else {
 		const body = ctx.request.body;
+		
 
+		
+		
+		
 		let result = await model.add(body);
+		let omdbData = await getOMDBdata(body.imdbId)
+		let omdbDict = {
+			"title":omdbData.data.Title,
+			"movieId": result.insertId,
+			"imdbId":omdbData.data.imdbID,
+			"director": omdbData.data.Director,
+			"poster":omdbData.data.Poster,
+			"lastModifiedHeader":omdbData.headers['last-modified'],
+			"expires": omdbData.headers.expires
 
+		}
+		console.log(omdbDict)
+		let omdbResult = await omdb.add(omdbDict);
 		if (result) {
-
-			ctx.status = 201;
+			if (!omdbResult){
+				ctx.body = {
+					message:"OMDB API was unable to add to database but the movie record has still been added"
+				}
+			}else{
+				ctx.status = 201;
 
 			ctx.body = {
 				ID: result.insertId
 			}
+		}
+
+			
 
 		}
 	}
@@ -81,20 +108,25 @@ async function updateMovie(ctx) {
     let id =  ctx.params.id;
 		
 	const permission = can.update(ctx.state.user,ctx.state.user);
-	console.log(permission)
+	
 	if (!permission.granted) {
 		ctx.status = 403;
 	} else {
 		
 		let update = await model.updateMovie(
 		id,
-		ctx.request.body.title,
-		ctx.request.body.year,
-		ctx.request.body.genre,
-		ctx.request.body.runtime,
-		ctx.request.body.language,
-
-	)
+		ctx.request.body)
+		if (!ctx.request.body.imdbId){
+			let movie = await model.getById(id);
+			let omdbRecord = await omdb.getById(movie[0].imdbId);
+			if (movie[0].imdbId){
+				
+				let omdbData = await getOMDBdata(movie[0].imdbId,omdbRecord[0].lastModifiedHeader,id)
+				
+			}
+		}
+		
+		
 
 		if (update) {
 
@@ -116,10 +148,10 @@ async function deleteMovie(ctx) {
 		ctx.status = 403;
 	} else {
 		
-		//let movies = await model.deleteMovie(id);
+		let movies = await model.deleteMovie(id);
 	
 
-		if (true) {
+		if (movies) {
 
 			ctx.status = 201;
 

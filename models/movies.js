@@ -21,8 +21,8 @@ exports.deleteMovie = async function deleteMovie(id) {
 	let data = await db.run_query(query, id);
 	return data;
 } //update a movie in the database 
-exports.updateMovie = async function updateMovie(id,title,year,genre,runtime,language) {
-	let query = "UPDATE Movies SET Title =?,Year = ?,Genre = ?,Runtime = ?,Language = ? WHERE id = ?;";
-	let data = await db.run_query(query, [title,year,genre,runtime,language,id]);
+exports.updateMovie = async function updateMovie(id,body) {
+	let query = "UPDATE Movies SET ? WHERE id = ?;";
+	let data = await db.run_query(query, [body,id]);
 	return data;
 }

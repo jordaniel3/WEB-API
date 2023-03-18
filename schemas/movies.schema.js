@@ -46,7 +46,15 @@ module.exports = {
     
     "language": {
     
-    "description": "Is the article published or not",
+    "description": "The language of movie or show",
+    
+    "type": "string"
+    
+    },
+    
+    "imdbId": {
+    
+    "description": "The IMDB ID of the movie or show",
     
     "type": "string"
     

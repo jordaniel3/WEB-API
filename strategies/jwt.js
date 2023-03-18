@@ -24,7 +24,6 @@ function getjwt(){
 const strategy = new JwtStrategy({secretOrKey:"test",
                                     jwtFromRequest:getjwt},
                                     async (token,done)=>{
-                                        console.log(token)
                                         return done(null,token.result)
                                     });
 module.exports = strategy;
