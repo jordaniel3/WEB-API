@@ -17,7 +17,7 @@ const checkUserAndPass = async (username, password, done) => {
     if (result.length) {
         const user = result[0];
         
-         console.log( )
+         console.log(user,"#########" )
         if (await bcrypt.compare(password, user.password)) {
             console.log(`Successfully authenticated user ${username}`);
             return done(null, user);

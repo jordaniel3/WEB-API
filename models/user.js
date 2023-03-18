@@ -31,4 +31,3 @@ exports.findByUsername = async function getByUsername(username) {
 	const user = await db.run_query(query, username);
 	return user;
    }
-   
