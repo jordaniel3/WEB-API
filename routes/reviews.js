@@ -12,7 +12,7 @@ const router = Router({
 router.get('/', getAll);
 router.post('/', bodyParser(),validateReview,auth, createReview);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', bodyParser(),validateReview,auth, updateArticle);
+router.put('/:id([0-9]{1,})', bodyParser(),validateReview,auth, updateReview);
 router.del('/:id([0-9]{1,})',auth, deleteReview);
 
 async function getAll(ctx) {
@@ -78,7 +78,7 @@ async function createReview(ctx) {
 
 }
 
-async function updateArticle(ctx) {
+async function updateReview(ctx) {
     let id =  ctx.params.id;
 	
 	const permission = can.update(ctx.state.user,ctx.state.user);
@@ -89,18 +89,24 @@ async function updateArticle(ctx) {
 		
 		let update = await model.updateReview(
 			id,
-			ctx.request.body.reviewerid,
-			ctx.request.body.rating
+			ctx.request.body.Reviewer,
+			ctx.request.body.Rating
 		)
 
-		if (update) {
+		if (update.affectedRows!=0) {
 
-			ctx.status = 201;
+			ctx.status = 410;
 
 			ctx.body = {
 				message:"Record Updated"
 			}
 
+		}else{
+			ctx.status = 304;
+
+			ctx.body = {
+				message:"Record does not exist"
+			}
 		}
 	}
 }
@@ -116,14 +122,20 @@ async function deleteReview(ctx) {
 		
 		let reviews = await model.deleteReview(id);
 
-		if (reviews) {
+		if (reviews.affectedRows!=0) {
 
-			ctx.status = 201;
+			ctx.status = 410;
 
 			ctx.body = {
 				message:"Record Deleted"
 			}
 
+		}else{
+			ctx.status = 304;
+
+			ctx.body = {
+				message:"Record does not exist"
+			}
 		}
 	}
 }

@@ -17,12 +17,12 @@ exports.add = async function add(review) {
 	return data;
 } //delete a review in the database 
 exports.deleteReview = async function deleteReview(id) {
-	let query = "DELETE FROM Reviews WHERE MovieID = ?;";
+	let query = "DELETE FROM Reviews WHERE id = ?;";
 	let data = await db.run_query(query, id);
 	return data;
 } //update a review in the database 
 exports.updateReview = async function updateReview(id,reviewerid,rating) {
-	let query = "UPDATE Reviews SET ReviewerID =?,Rating =? WHERE MovieID = ? ;";
+	let query = "UPDATE Reviews SET Reviewer =?,Rating =? WHERE id = ? ;";
 	let data = await db.run_query(query, [reviewerid,rating,id]);
 	return data;
 }

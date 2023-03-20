@@ -92,9 +92,9 @@ async function updateActor(ctx) {
 		ctx.status = 403;
 	} else {
 		
-		let update = await model.updateActor(id,ctx.request.body.first,ctx.request.body.last,ctx.request.body.gender)
+		let update = await model.updateActor(id,ctx.request.body.FirstName,ctx.request.body.LastName,ctx.request.body.Gender)
 
-		if (update) {
+		if (update.affectedRows!=0) {
 
 			ctx.status = 201;
 
@@ -102,6 +102,11 @@ async function updateActor(ctx) {
 				message:"Record Updated"
 			}
 
+		}else{
+			ctx.status=304;
+			ctx.body = {
+			message:"Record does not exist"
+		}
 		}
 	}
 }
@@ -117,14 +122,20 @@ async function deleteActor(ctx) {
 		
 	let actors = await model.deleteActor(id);
 
-		if (actors) {
+		if (actors.affectedRows!=0) {
 
-			ctx.status = 201;
+			ctx.status = 410;
 
 			ctx.body = {
 				message:"Record Deleted"
 			}
 
+		}else{
+			ctx.status = 304;
+
+			ctx.body = {
+				message:"Record does not exist"
+			}
 		}
 	}
 }

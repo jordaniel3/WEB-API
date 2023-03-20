@@ -33,9 +33,9 @@ module.exports = {
     "description": "password"
     
     },
-    "userName": {
+    "username": {
     
-        "description": "User name",
+        "description": "Username",
         
         "type": "string"
         

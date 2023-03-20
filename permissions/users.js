@@ -5,6 +5,8 @@ ac.grant('user').condition({Fn:'EQUALS', args: {'requester':'$.owner'}}).execute
  .on('user', ['*', '!password', '!passwordSalt']);
 ac.grant('user').condition({Fn:'EQUALS', args: {'requester':'$.owner'}}).execute('update')
  .on('user', ['firstName', 'lastName', 'username', 'password']);
+ ac.grant('user').condition({Fn:'EQUALS', args:
+{'requester':'$.owner'}}).execute('delete').on('user');
 
 ac.grant('admin').execute('read').on('user');
 ac.grant('admin').execute('read').on('users');

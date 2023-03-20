@@ -12,15 +12,15 @@ module.exports = {
     
     "properties": {
     
-    "reviewerid": {
+    "Reviewer": {
     
-    "description": "Id of the reviewer",
+    "description": "name of the reviewer",
     
-    "type": "integer"
+    "type": "string"
     
     },
     
-    "rating": {
+    "Rating": {
     
     "description": "The rating of the Movie",
     
@@ -30,6 +30,6 @@ module.exports = {
     
     },
     
-    "required": ["reviewerid", "rating"]
+    "required": ["Reviewer", "Rating"]
     
     }

@@ -13,9 +13,9 @@ const router = Router({
 });
 
 router.get('/', getAll);
-router.post('/', bodyParser(),validateMovie,auth, createMovie);
+router.post('/', bodyParser(),auth,validateMovie, createMovie);
 router.get('/:id([0-9]{1,})', getById);
-router.put('/:id([0-9]{1,})', bodyParser(),validateMoviePUT,auth, updateMovie);
+router.put('/:id([0-9]{1,})', bodyParser(),auth,validateMoviePUT, updateMovie);
 router.del('/:id([0-9]{1,})',auth, deleteMovie);
 
 async function getAll(ctx) {
@@ -24,9 +24,12 @@ async function getAll(ctx) {
 	let movies = await model.getAll();
 
 	if (movies.length) {
-		
+		ctx.status=200;
 		ctx.body = movies;
 
+	}else{
+		ctx.status=400;
+		ctx.body={message:"There are no movies"}
 	}
 
 }
@@ -49,6 +52,7 @@ async function getById(ctx) {
 				ctx.status = 304;
 			}
 		}
+		ctx.status=200;
 
 		ctx.body = data;;
 		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
@@ -59,7 +63,7 @@ async function getById(ctx) {
 }
 
 async function createMovie(ctx) {
-	console.log(ctx.request.body)
+	let omdbResult;
 	const permission = can.create(ctx.state.user);
 	console.log(permission)
 	if (!permission.granted) {
@@ -72,24 +76,31 @@ async function createMovie(ctx) {
 		
 		
 		let result = await model.add(body);
-		let omdbData = await getOMDBdata(body.imdbId)
-		let omdbDict = {
-			"title":omdbData.data.Title,
-			"movieId": result.insertId,
-			"imdbId":omdbData.data.imdbID,
-			"director": omdbData.data.Director,
-			"poster":omdbData.data.Poster,
-			"lastModifiedHeader":omdbData.headers['last-modified'],
-			"expires": omdbData.headers.expires
+		if(body.imdbId!=undefined){
+			let omdbData = await getOMDBdata(body.imdbId)
+		
+			let omdbDict = {
+				"title":omdbData.data.Title,
+				"movieId": result.insertId,
+				"imdbId":omdbData.data.imdbID,
+				"director": omdbData.data.Director,
+				"poster":omdbData.data.Poster,
+				"lastModifiedHeader":omdbData.headers['last-modified'],
+				"expires": omdbData.headers.expires
 
-		}
-		console.log(omdbDict)
-		let omdbResult = await omdb.add(omdbDict);
+			}
+			console.log(omdbDict)
+			omdbResult = await omdb.add(omdbDict);
+	}
+		
+		
 		if (result) {
 			if (!omdbResult){
 				ctx.body = {
+					
 					message:"OMDB API was unable to add to database but the movie record has still been added"
 				}
+				ctx.status =201;
 			}else{
 				ctx.status = 201;
 
@@ -118,17 +129,25 @@ async function updateMovie(ctx) {
 		ctx.request.body)
 		if (!ctx.request.body.imdbId){
 			let movie = await model.getById(id);
-			let omdbRecord = await omdb.getById(movie[0].imdbId);
+			
+			if(!movie.length){
+				ctx.status=400
+				ctx.body = {
+					message:"Record will update with no imdb id"
+				}
+			}else{
 			if (movie[0].imdbId){
-				
+				let omdbRecord = await omdb.getById(movie[0].imdbId);
 				let omdbData = await getOMDBdata(movie[0].imdbId,omdbRecord[0].lastModifiedHeader,id)
-				
-			}
+				if (omdbData.affectedRows!=0){
+					console.log("the associated movie has also been updated")
+				}
+			}}
 		}
 		
 		
 
-		if (update) {
+		if (update.affectedRows!=0) {
 
 			ctx.status = 201;
 
@@ -136,7 +155,13 @@ async function updateMovie(ctx) {
 				message:"Record Updated"
 			}
 
+		}else{
+			ctx.status=304;
+			ctx.body = {
+			message:"Record does not exist"
 		}
+		}
+		
 	}
 }
 
@@ -149,16 +174,23 @@ async function deleteMovie(ctx) {
 	} else {
 		
 		let movies = await model.deleteMovie(id);
+		console.log(movies)
 	
 
-		if (movies) {
+		if (movies.affectedRows!=0) {
 
-			ctx.status = 201;
+			ctx.status = 410;
 
 			ctx.body = {
 				message:"Record Deleted"
 			}
 
+		}else{
+			ctx.status = 304;
+
+			ctx.body = {
+				message:"Record does not exist"
+			}
 		}
 	}
 }

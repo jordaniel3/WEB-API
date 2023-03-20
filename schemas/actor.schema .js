@@ -12,7 +12,7 @@ module.exports = {
     
     "properties": {
     
-    "first": {
+    "FirstName": {
     
     "description": "Main title of the movie",
     
@@ -20,7 +20,7 @@ module.exports = {
     
     },
     
-    "last": {
+    "LastName": {
     
     "description": "The year of the Movie",
     
@@ -28,7 +28,7 @@ module.exports = {
     
     },
     
-    "gender": {
+    "Gender": {
     
     "description": "the genre of the movie",
     
@@ -38,6 +38,6 @@ module.exports = {
     
     },
     
-    "required": ["first", "last", "gender"]
+    "required": ["FirstName", "LastName", "Gender"]
     
     }
