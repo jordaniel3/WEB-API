@@ -23,6 +23,7 @@ router.put('/:id([0-9]{1,})', bodyParser(),auth,validateUser, updateUser);
 router.del('/:id([0-9]{1,})',auth, deleteUser);
 
 async function getAll(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	//console.log(ctx.state.user)
 	
 	const permission = can.readAll(ctx.state.user);
@@ -41,7 +42,7 @@ async function getAll(ctx) {
 
 
 async function login(ctx) {
-	
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	if (ctx.request.body.username===undefined){
 		ctx.status=400
 		ctx.body={message:"No login provided"}
@@ -77,6 +78,7 @@ async function login(ctx) {
 	}
 }
 async function logout(ctx){
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	await fs.writeFile(
 		"fakecookie.json",
 		JSON.stringify({Authorisation:` `}),
@@ -92,6 +94,7 @@ async function logout(ctx){
 	logger.info(`User logged out`)
 }
 async function getById(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let id = parseInt(ctx.params.id);
 	console.log(id)
 	const permission = can.read(ctx.state.user,id);
@@ -128,7 +131,7 @@ async function getById(ctx) {
 }
 
 async function createUser(ctx) {
-
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	const body = ctx.request.body;
 	body.password = await bcrypt.hash(body.password, saltRounds);
 	let result = await model.add(body);
@@ -151,6 +154,7 @@ async function createUser(ctx) {
 }
 
 async function updateUser(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id = parseInt(ctx.params.id);
 	const permission = can.delete(ctx.state.user,id);
 	console.log(permission)
@@ -176,6 +180,7 @@ async function updateUser(ctx) {
 }
 
 async function deleteUser(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id = parseInt(ctx.params.id);
 	
 	const permission = can.delete(ctx.state.user,id);

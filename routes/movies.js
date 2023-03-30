@@ -21,6 +21,7 @@ router.put('/:id([0-9]{1,})', bodyParser(),auth,validateMoviePUT, updateMovie);
 router.del('/:id([0-9]{1,})',auth, deleteMovie);
 
 async function getAll(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	console.log("pass")
 
 	let movies = await model.getAll();
@@ -38,7 +39,7 @@ async function getAll(ctx) {
 }
 
 async function getById(ctx) {
-
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let id = ctx.params.id;
 	console.log(ctx.headers)
 
@@ -56,6 +57,7 @@ async function getById(ctx) {
 			}
 		}
 		ctx.status=200;
+		data['link']="http://localhost:3000/api/v1/movies/"
 
 		ctx.body = {xml :xmlparser.parse("movie",data),
 		json: data};
@@ -67,6 +69,7 @@ async function getById(ctx) {
 }
 
 async function createMovie(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let omdbResult;
 	const permission = can.create(ctx.state.user);
 	console.log(permission)
@@ -123,6 +126,7 @@ async function createMovie(ctx) {
 }
 
 async function updateMovie(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id =  ctx.params.id;
 		
 	const permission = can.update(ctx.state.user,ctx.state.user);
@@ -175,6 +179,7 @@ async function updateMovie(ctx) {
 }
 
 async function deleteMovie(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id = ctx.params.id;
 	const permission = can.delete(ctx.state.user,ctx.state.user);
 	console.log(permission)

@@ -18,6 +18,7 @@ router.put('/:id([0-9]{1,})', bodyParser(),validateReview,auth, updateReview);
 router.del('/:id([0-9]{1,})',auth, deleteReview);
 
 async function getAll(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	console.log("pass")
 
 	let reviews = await model.getAll();
@@ -32,7 +33,7 @@ async function getAll(ctx) {
 }
 
 async function getById(ctx) {
-
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let id = ctx.params.id;
 
 	let review = await model.getById(id);
@@ -48,6 +49,7 @@ async function getById(ctx) {
 				ctx.status = 304;
 			}
 		}
+		data['link']="http://localhost:3000/api/v1/reviews/"
 
 		ctx.body = {xml :xmlparser.parse("review",data),
 		json: data};
@@ -59,7 +61,7 @@ async function getById(ctx) {
 }
 
 async function createReview(ctx) {
-
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	const permission = can.create(ctx.state.user);
 	console.log(permission)
 	if (!permission.granted) {
@@ -85,6 +87,7 @@ async function createReview(ctx) {
 }
 
 async function updateReview(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id =  ctx.params.id;
 	
 	const permission = can.update(ctx.state.user,ctx.state.user);
@@ -120,6 +123,7 @@ async function updateReview(ctx) {
 }
 
 async function deleteReview(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id = ctx.params.id;
 	const permission = can.delete(ctx.state.user,ctx.state.user);
 	console.log(permission)

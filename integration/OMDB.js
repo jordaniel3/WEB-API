@@ -51,9 +51,6 @@ exports.getOMDBdata = async function getOMDBdata(imdbId = undefined,storedSince=
     }
 
     console.log(res.status)
-    // console.log(res.data)
-    // console.log(res.headers)
-    // postprocessing: check it was successful and that we have a content length 
     if (res.status == 200) {
         return res
     } else {

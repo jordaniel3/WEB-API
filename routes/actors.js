@@ -18,6 +18,7 @@ router.put('/:id([0-9]{1,})', bodyParser(),validateActor,auth, updateActor);
 router.del('/:id([0-9]{1,})',auth, deleteActor);
 
 async function getAll(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 
 	let actors = await model.getAll();
 
@@ -33,7 +34,7 @@ async function getAll(ctx) {
 
 
 async function getById(ctx) {
-
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let id = ctx.params.id;
 
 	let actor = await model.getById(id);
@@ -49,7 +50,7 @@ async function getById(ctx) {
 				ctx.status = 304;
 			}
 		}
-
+		data['link']="http://localhost:3000/api/v1/actors/"
 		ctx.body = {xml :xmlparser.parse("actor",data),
 		json: data};
 		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
@@ -61,7 +62,7 @@ async function getById(ctx) {
 
 async function createActor(ctx) {
 
-	
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	const permission = can.create(ctx.state.user);
 	console.log(permission)
 	if (!permission.granted) {
@@ -90,6 +91,7 @@ async function createActor(ctx) {
 }
 
 async function updateActor(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id =  ctx.params.id;
 	
 	const permission = can.update(ctx.state.user,ctx.state.user);
@@ -120,6 +122,7 @@ async function updateActor(ctx) {
 }
 
 async function deleteActor(ctx) {
+	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
     let id = ctx.params.id;
 	const permission = can.delete(ctx.state.user,ctx.state.user);
 	console.log(permission)
