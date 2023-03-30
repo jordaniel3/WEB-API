@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
+const logger = require('../Logging/logger');
 const model = require('../models/movies');
 const {getOMDBdata} = require('../integration/OMDB');
 const omdb = require('../integration/OMDBmodel');
@@ -68,6 +69,7 @@ async function createMovie(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		const body = ctx.request.body;
 		
@@ -95,6 +97,7 @@ async function createMovie(ctx) {
 		
 		
 		if (result) {
+			
 			if (!omdbResult){
 				ctx.body = {
 					
@@ -107,6 +110,7 @@ async function createMovie(ctx) {
 			ctx.body = {
 				ID: result.insertId
 			}
+			logger.info(`Movie ${insertId} added by ${ctx.state.user.username}`)
 		}
 
 			
@@ -122,6 +126,7 @@ async function updateMovie(ctx) {
 	
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 		let update = await model.updateMovie(
@@ -154,6 +159,7 @@ async function updateMovie(ctx) {
 			ctx.body = {
 				message:"Record Updated"
 			}
+			logger.info(`Movie ${id} updated by ${ctx.state.user.username}`)
 
 		}else{
 			ctx.status=304;
@@ -171,6 +177,7 @@ async function deleteMovie(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 		let movies = await model.deleteMovie(id);
@@ -184,6 +191,7 @@ async function deleteMovie(ctx) {
 			ctx.body = {
 				message:"Record Deleted"
 			}
+			logger.info(`Movie ${id} deleted by ${ctx.state.user.username}`)
 
 		}else{
 			ctx.status = 304;

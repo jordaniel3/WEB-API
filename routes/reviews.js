@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const model = require('../models/reviews');
 const can = require('../permissions/reviews');
 const auth = require('../controllers/auth');
+const logger = require('../Logging/logger');
 const etag = require('etag');
 const {validateReview} = require('../controllers/validation');
 const router = Router({
@@ -60,6 +61,7 @@ async function createReview(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		const body = ctx.request.body;
 
@@ -72,6 +74,7 @@ async function createReview(ctx) {
 			ctx.body = {
 				ID: result.insertId
 			}
+			logger.info(`Review ${insertId} added by ${ctx.state.user.username}`)
 
 		}
 	}
@@ -85,6 +88,7 @@ async function updateReview(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 		let update = await model.updateReview(
@@ -100,6 +104,7 @@ async function updateReview(ctx) {
 			ctx.body = {
 				message:"Record Updated"
 			}
+			logger.info(`Review ${id} was updated by ${ctx.state.user.username}`)
 
 		}else{
 			ctx.status = 304;
@@ -117,9 +122,10 @@ async function deleteReview(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
-		
+		logger.info(`Review record ${id} was deleted by ${ctx.state.user.username}`)
 		let reviews = await model.deleteReview(id);
 
 		if (reviews.affectedRows!=0) {
