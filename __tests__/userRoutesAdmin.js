@@ -26,7 +26,18 @@ describe('Post new user', () => {
         expect(res.statusCode).toEqual(201) 
     })
 });
-describe('Post new user', () => {
+describe('Post new user with same username', () => {
+    it('should not create a new user', async () => {
+        const res = await request(app.callback()).post('/api/v1/users').send({
+            username: 'Jsmith',
+            password: 'password',
+            firstName: 'test',
+            lastName: 'user'
+        }) 
+        expect(res.statusCode).toEqual(400) 
+    })
+});
+describe('Post new user with missing data', () => {
     it('should not create a new user', async () => {
         const res = await request(app.callback()).post('/api/v1/users').send({
             password: 'password',

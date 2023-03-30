@@ -1,0 +1,1031 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Movie Database API",
+    "description": "This is a Movie Database API",
+    "contact": {
+      "email": "akinpelud@uni.coventry.ac.uk"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/jordaniel3/6003CEM/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "https://tictaclatin-stormkermit-3000.codio-box.uk/api/v1/",
+      "description": "6003CEM Movie Database"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "Users",
+      "description": "Operations available to regular users"
+    },
+    {
+      "name": "Visitors",
+      "description": "Operations available to visitors who are yet to make an account"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Visitors"
+        ],
+        "summary": "Logs users in",
+        "description": "Logs User In",
+        "operationId": "login",
+        "requestBody": {
+          "description": "Create new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user created"
+          },
+          "400": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Returns all registered users",
+        "description": "This path will return all registered users\n",
+        "operationId": "allUsers",
+        "responses": {
+          "200": {
+            "description": "All users were returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/allUsers"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Action was not authorised"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Visitors"
+        ],
+        "summary": "adds a new user to the database",
+        "description": "Adds an user to the database",
+        "operationId": "addUser",
+        "requestBody": {
+          "description": "Create new user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "user created"
+          },
+          "400": {
+            "description": "an existing item already exists"
+          },
+          "403": {
+            "description": "invalid input, user not created"
+          }
+        }
+      }
+    },
+    "/users/:id": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users"
+        ],
+        "summary": "Returns the corresponding user",
+        "description": "This path will return the user belonging to that id (Users can only view their own id path)\n",
+        "operationId": "getUserByID",
+        "responses": {
+          "200": {
+            "description": "The user was successfully returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userByID"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Resource has not been modified"
+          },
+          "403": {
+            "description": "Action was not authorised"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins",
+          "Users"
+        ],
+        "summary": "updates user info",
+        "description": "This path will update the user belonging to that id (Users can only update their own id path)",
+        "operationId": "updateUser",
+        "requestBody": {
+          "description": "Update user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "user updated"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "403": {
+            "description": "Not authorised"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins",
+          "Users"
+        ],
+        "summary": "Deletes the corresponding user",
+        "description": "This path will delete the user belonging to that id (Users can only del their own id path)\n",
+        "operationId": "deleteUserByID",
+        "responses": {
+          "140": {
+            "description": "User deleted"
+          },
+          "403": {
+            "description": "Action was not authorised"
+          }
+        }
+      }
+    },
+    "/actors": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns all recorded actors",
+        "description": "This path will return all recorded actors\n",
+        "operationId": "allActors",
+        "responses": {
+          "200": {
+            "description": "All actors were returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/allActors"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error has occured"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "adds a new actor to the database",
+        "description": "Adds an actor to the database",
+        "operationId": "addActor",
+        "requestBody": {
+          "description": "Create new actor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createActor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "acror created"
+          },
+          "403": {
+            "description": "invalid input, actor not created"
+          }
+        }
+      }
+    },
+    "/actors/:id": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns the corresponding actor",
+        "description": "This path will return the actor belonging to that id\n",
+        "operationId": "getActorByID",
+        "responses": {
+          "200": {
+            "description": "The actor was successfully returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/actorByID"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Resource has not been modified"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "updates Actor info",
+        "description": "This path will update the actor belonging to that id",
+        "operationId": "updateActor",
+        "requestBody": {
+          "description": "Update actor",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/actorByID"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Actor updated"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "403": {
+            "description": "Not authorised"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Deletes the corresponding actor",
+        "description": "This path will delete the actor belonging to that id \n",
+        "operationId": "deleteActorByID",
+        "responses": {
+          "403": {
+            "description": "Action was not authorised"
+          },
+          "410": {
+            "description": "Actor deleted"
+          }
+        }
+      }
+    },
+    "/movies": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns all recorded movies",
+        "description": "This path will return all recorded movies\n",
+        "operationId": "allMovies",
+        "responses": {
+          "200": {
+            "description": "All movies were returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/allMovies"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error has occured"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "adds movies into database",
+        "description": "Adds an movie to the database",
+        "operationId": "addMovie",
+        "requestBody": {
+          "description": "Create new movie",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createMovie"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "movie created"
+          },
+          "403": {
+            "description": "invalid input, movie not created"
+          }
+        }
+      }
+    },
+    "/movies/:id": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns the corresponding movie",
+        "description": "This path will return the movie belonging to that id\n",
+        "operationId": "getMovieByID",
+        "responses": {
+          "200": {
+            "description": "The movie was successfully returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/movieByID"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Resource has not been modified"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "updates Movie info",
+        "description": "This path will update the movie belonging to that id",
+        "operationId": "updateMovie",
+        "requestBody": {
+          "description": "Update Movie",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createMovie"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Movie updated"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "403": {
+            "description": "Not authorised"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Deletes the corresponding movie",
+        "description": "This path will delete the movie belonging to that id \n",
+        "operationId": "deleteMovieByID",
+        "responses": {
+          "403": {
+            "description": "Action was not authorised"
+          },
+          "410": {
+            "description": "movie deleted"
+          }
+        }
+      }
+    },
+    "/reviews": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns all recorded reviews",
+        "description": "This path will return all recorded reviews\n",
+        "operationId": "allReviews",
+        "responses": {
+          "200": {
+            "description": "All reviews were returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/allReviews"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An error has occured"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "adds reviews into database",
+        "description": "Adds a Review to the database",
+        "operationId": "addReview",
+        "requestBody": {
+          "description": "Create new review",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created"
+          },
+          "403": {
+            "description": "invalid input, movie not created"
+          }
+        }
+      }
+    },
+    "/reviews/:id": {
+      "get": {
+        "tags": [
+          "Admins",
+          "Users",
+          "Visitors"
+        ],
+        "summary": "Returns the corresponding review",
+        "description": "This path will return the review belonging to that id\n",
+        "operationId": "getReviewByID",
+        "responses": {
+          "200": {
+            "description": "The review was successfully returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/reviewByID"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Resource has not been modified"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "updates Review",
+        "description": "This path will update the review belonging to that id",
+        "operationId": "updateReview",
+        "requestBody": {
+          "description": "Update Review",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review updated"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "403": {
+            "description": "Not authorised"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Deletes the corresponding Review",
+        "description": "This path will delete the review belonging to that id \n",
+        "operationId": "deleteReviewByID",
+        "responses": {
+          "403": {
+            "description": "Action was not authorised"
+          },
+          "410": {
+            "description": "Review deleted"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "allUsers": {
+        "type": "array",
+        "example": [
+          {
+            "id": 1,
+            "firstName": "John",
+            "lastName": "Smith",
+            "username": "Jsmith"
+          },
+          {
+            "id": 2,
+            "firstName": "Jon",
+            "lastName": "Smith",
+            "username": "Jsmith2"
+          }
+        ],
+        "items": {
+          "$ref": "#/components/schemas/allUsers_inner"
+        }
+      },
+      "userByID": {
+        "required": [
+          "firstName",
+          "id",
+          "lastName",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Smith"
+          },
+          "userName": {
+            "type": "string",
+            "example": "Jsmith"
+          }
+        }
+      },
+      "createUser": {
+        "required": [
+          "firstName",
+          "lastName",
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "password"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Smith"
+          },
+          "userName": {
+            "type": "string",
+            "example": "Jsmith"
+          }
+        }
+      },
+      "allActors": {
+        "type": "array",
+        "example": [
+          {
+            "id": 1,
+            "FirstName": "Michael B.",
+            "LastName": "Jordan",
+            "Gender": "Male",
+            "modified": "2023-03-17 00:03:17"
+          },
+          {
+            "id": 2,
+            "FirstName": "Tessa",
+            "LastName": "Thompson",
+            "Gender": "Female",
+            "modified": "2023-03-17 00:03:17"
+          }
+        ],
+        "items": {
+          "$ref": "#/components/schemas/allActors_inner"
+        }
+      },
+      "createActor": {
+        "required": [
+          "FirstName",
+          "Gender",
+          "LastName"
+        ],
+        "type": "object",
+        "properties": {
+          "FirstName": {
+            "type": "string",
+            "example": "Michael B."
+          },
+          "LastName": {
+            "type": "string",
+            "example": "Jordan"
+          },
+          "Gender": {
+            "type": "string",
+            "example": "Male"
+          }
+        }
+      },
+      "actorByID": {
+        "required": [
+          "firstName",
+          "id",
+          "lastName",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Michael B."
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Jordan"
+          },
+          "Gender": {
+            "type": "string",
+            "example": "Male"
+          }
+        }
+      },
+      "allMovies": {
+        "type": "array",
+        "example": [
+          {
+            "id": 1,
+            "Title": "Creed III",
+            "Year": 2023,
+            "Genre": "Action",
+            "Runtime": 123,
+            "Language": "English",
+            "modified": "2023-03-17 00:03:17",
+            "imdbId": "tt3794354"
+          },
+          {
+            "id": 2,
+            "Title": "Creed II",
+            "Year": 2020,
+            "Genre": "Action",
+            "Runtime": 125,
+            "Language": "English",
+            "modified": "2023-03-17 00:03:17"
+          }
+        ],
+        "items": {
+          "$ref": "#/components/schemas/allMovies_inner"
+        }
+      },
+      "createMovie": {
+        "required": [
+          "Genre",
+          "Language",
+          "Runtime",
+          "Title",
+          "Year",
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "Title": {
+            "type": "string",
+            "example": "Creed"
+          },
+          "Year": {
+            "type": "integer",
+            "example": 2016
+          },
+          "Genre": {
+            "type": "string",
+            "example": "Action"
+          },
+          "Runtime": {
+            "type": "integer",
+            "example": 124
+          },
+          "Language": {
+            "type": "string",
+            "example": "English"
+          },
+          "imdbId": {
+            "type": "string",
+            "example": "tt15474916"
+          }
+        }
+      },
+      "movieByID": {
+        "required": [
+          "Genre",
+          "Language",
+          "Runtime",
+          "Title",
+          "Year",
+          "imdbId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "Year": {
+            "type": "integer"
+          },
+          "Genre": {
+            "type": "string"
+          },
+          "Runtime": {
+            "type": "integer"
+          },
+          "Language": {
+            "type": "string"
+          },
+          "modified": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": 1,
+          "Title": "Creed III",
+          "Year": 2023,
+          "Genre": "Action",
+          "Runtime": 123,
+          "Language": "English",
+          "modified": "2023-03-17 00:03:17",
+          "imdbId": "tt3794354"
+        }
+      },
+      "allReviews": {
+        "type": "array",
+        "example": [
+          {
+            "id": 1,
+            "MovieID": 1,
+            "Reviewer": "METACRITIC",
+            "Rating": 7,
+            "modified": "2023-03-17 00:03:17"
+          },
+          {
+            "id": 2,
+            "MovieID": 3,
+            "Reviewer": "NY TIMES",
+            "Rating": 9,
+            "modified": "2023-03-17 00:03:17"
+          }
+        ],
+        "items": {
+          "$ref": "#/components/schemas/allReviews_inner"
+        }
+      },
+      "createReview": {
+        "required": [
+          "MovieID",
+          "Rating",
+          "Reviewer"
+        ],
+        "type": "object",
+        "properties": {
+          "MovieID": {
+            "type": "string",
+            "example": "4"
+          },
+          "Reviewer": {
+            "type": "integer"
+          },
+          "Rating": {
+            "type": "string",
+            "example": "9"
+          }
+        }
+      },
+      "reviewByID": {
+        "required": [
+          "MovieID",
+          "Rating",
+          "Reviewer",
+          "id",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "MovieID": {
+            "type": "integer"
+          },
+          "Reviewer": {
+            "type": "string"
+          },
+          "Rating": {
+            "type": "number"
+          },
+          "modified": {
+            "type": "string"
+          }
+        },
+        "example": [
+          {
+            "id": 1,
+            "MovieID": 1,
+            "Reviewer": "METACRITIC",
+            "Rating": 7,
+            "modified": "2023-03-17 00:03:17"
+          }
+        ]
+      },
+      "allUsers_inner": {
+        "required": [
+          "firstName",
+          "id",
+          "lastName",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          }
+        }
+      },
+      "allActors_inner": {
+        "required": [
+          "FirstName",
+          "Gender",
+          "LastName",
+          "id",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "FirstName": {
+            "type": "string"
+          },
+          "LastName": {
+            "type": "string"
+          },
+          "Gender": {
+            "type": "string"
+          },
+          "modified": {
+            "type": "string"
+          }
+        }
+      },
+      "allMovies_inner": {
+        "required": [
+          "Genre",
+          "Language",
+          "Runtime",
+          "Title",
+          "Year",
+          "id",
+          "imdbId",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "Title": {
+            "type": "string"
+          },
+          "Year": {
+            "type": "integer"
+          },
+          "Genre": {
+            "type": "string"
+          },
+          "Runtime": {
+            "type": "integer"
+          },
+          "Language": {
+            "type": "string"
+          },
+          "modified": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "allReviews_inner": {
+        "required": [
+          "MovieID",
+          "Rating",
+          "Reviewer",
+          "id",
+          "modified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "MovieID": {
+            "type": "integer"
+          },
+          "Reviewer": {
+            "type": "string"
+          },
+          "Rating": {
+            "type": "number"
+          },
+          "modified": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

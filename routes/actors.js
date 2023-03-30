@@ -25,6 +25,8 @@ async function getAll(ctx) {
 		
 		ctx.body = actors;
 
+	}else{
+		ctx.status = 400
 	}
 
 }

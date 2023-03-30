@@ -96,7 +96,7 @@ async function getById(ctx) {
 				}
 			}
 	
-			ctx.body = data;;
+			ctx.body = data;
 			ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
 			ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 	
@@ -120,7 +120,11 @@ async function createUser(ctx) {
 			ID: result.insertId
 		}
 
+	}else{
+		console.log(result)
+		ctx.status = 400;
 	}
+
 
 }
 
