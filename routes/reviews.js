@@ -5,6 +5,7 @@ const can = require('../permissions/reviews');
 const auth = require('../controllers/auth');
 const logger = require('../Logging/logger');
 const etag = require('etag');
+const xmlparser = require("js2xmlparser");
 const {validateReview} = require('../controllers/validation');
 const router = Router({
     prefix: '/api/v1/reviews'
@@ -23,7 +24,8 @@ async function getAll(ctx) {
 
 	if (reviews.length) {
 		
-		ctx.body = reviews;
+		ctx.body = {xml :xmlparser.parse("reviews",reviews),
+		json: reviews};
 
 	}
 
@@ -47,7 +49,8 @@ async function getById(ctx) {
 			}
 		}
 
-		ctx.body = data;;
+		ctx.body = {xml :xmlparser.parse("review",data),
+		json: data};
 		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
 		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 
