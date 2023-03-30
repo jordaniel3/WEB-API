@@ -5,6 +5,7 @@ const {getOMDBdata} = require('../integration/OMDB');
 const omdb = require('../integration/OMDBmodel');
 const etag = require('etag');
 const can = require('../permissions/actors');
+const xmlparser = require("js2xmlparser");
 const auth = require('../controllers/auth');
 const {validateMovie,validateMoviePUT} = require('../controllers/validation');
 
@@ -25,7 +26,8 @@ async function getAll(ctx) {
 
 	if (movies.length) {
 		ctx.status=200;
-		ctx.body = movies;
+		ctx.body = {xml :xmlparser.parse("movies",movies),
+		json: movies};
 
 	}else{
 		ctx.status=400;
@@ -54,7 +56,8 @@ async function getById(ctx) {
 		}
 		ctx.status=200;
 
-		ctx.body = data;;
+		ctx.body = {xml :xmlparser.parse("movie",data),
+		json: data};
 		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
 		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 

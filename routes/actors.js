@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const model = require('../models/actors');
 const etag = require('etag');
 const can = require('../permissions/actors');
+const xmlparser = require("js2xmlparser");
 const auth = require('../controllers/auth');
 const {validateActor} = require('../controllers/validation');
 const router = Router({
@@ -23,8 +24,8 @@ async function getAll(ctx) {
 
 	if (actors.length) {
 		
-		ctx.body = actors;
-
+		ctx.body = {xml :xmlparser.parse("actors",actors),
+		json: actors};
 	}else{
 		ctx.status = 400
 	}
@@ -50,7 +51,8 @@ async function getById(ctx) {
 			}
 		}
 
-		ctx.body = data;;
+		ctx.body = {xml :xmlparser.parse("actor",data),
+		json: data};
 		ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
 		ctx.set('Etag', etag(JSON.stringify(ctx.body)));
 
