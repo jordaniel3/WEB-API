@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const logger = require('../Logging/logger');
 const model = require('../models/movies');
-const {getOMDBdata} = require('../integration/OMDB');
+const {getOMDBdata,getFromCache} = require('../integration/OMDB');
 const omdb = require('../integration/OMDBmodel');
 const etag = require('etag');
 const can = require('../permissions/actors');
@@ -41,7 +41,6 @@ async function getAll(ctx) {
 async function getById(ctx) {
 	ctx.set('Access-Control-Allow-Origin', null); // CORS disabled by default 
 	let id = ctx.params.id;
-	console.log(ctx.headers)
 
 	let movie = await model.getById(id);
 
@@ -57,6 +56,13 @@ async function getById(ctx) {
 			}
 		}
 		ctx.status=200;
+		if (data.imdbId){
+			const imdbResult = await getFromCache(data.imdbId)
+			data['IMDB']=imdbResult
+		}
+		
+
+		
 		data['link']="http://localhost:3000/api/v1/movies/"
 
 		ctx.body = {xml :xmlparser.parse("movie",data),
@@ -116,7 +122,7 @@ async function createMovie(ctx) {
 			ctx.body = {
 				ID: result.insertId
 			}
-			logger.info(`Movie ${insertId} added by ${ctx.state.user.username}`)
+			logger.info(`Movie ${result.insertId} added by ${ctx.state.user.username}`)
 		}
 
 			
@@ -145,7 +151,7 @@ async function updateMovie(ctx) {
 			if(!movie.length){
 				ctx.status=400
 				ctx.body = {
-					message:"Record will update with no imdb id"
+					message:"Record will update without imdb id"
 				}
 			}else{
 			if (movie[0].imdbId){

@@ -1,6 +1,14 @@
 const axios = require('axios');
 const model = require('./OMDBmodel');
 const etag = require('etag');
+
+
+exports.getFromCache = async function getFromCache(id) {
+    const result = await model.getById(id);
+    console.log(result)
+    return result
+}
+
 exports.getOMDBdata = async function getOMDBdata(imdbId = undefined,storedSince=undefined,ID=undefined) {
     let url, res
     
@@ -8,8 +16,7 @@ exports.getOMDBdata = async function getOMDBdata(imdbId = undefined,storedSince=
 
 
     // preprocessing: ensure a default id is set
-    if (imdbId !== undefined) {
-        // use the given id if it was supplied 
+    if (imdbId !== undefined) { 
         console.log("pass")
         url = `http://www.omdbapi.com/?i=${imdbId}&apikey=6c1f1272`
     }

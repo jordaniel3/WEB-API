@@ -79,7 +79,7 @@ async function createReview(ctx) {
 			ctx.body = {
 				ID: result.insertId
 			}
-			logger.info(`Review ${insertId} added by ${ctx.state.user.username}`)
+			logger.info(`Review ${result.insertId} added by ${ctx.state.user.username}`)
 
 		}
 	}

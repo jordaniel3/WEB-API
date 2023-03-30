@@ -10,12 +10,12 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/jordaniel3/6003CEM/1.0.0",
+      "url": "https://virtserver.swaggerhub.com/jordaniel3/6005CEM/1.0.0",
       "description": "SwaggerHub API Auto Mocking"
     },
     {
       "url": "https://tictaclatin-stormkermit-3000.codio-box.uk/api/v1/",
-      "description": "6003CEM Movie Database"
+      "description": "6005CEM Movie Database"
     }
   ],
   "tags": [
@@ -382,7 +382,7 @@
           "Users",
           "Visitors"
         ],
-        "summary": "Returns the corresponding movie",
+        "summary": "Returns the corresponding movie. If there is an IMDB id associated with the record it also returns an object of data pulled from the cache",
         "description": "This path will return the movie belonging to that id\n",
         "operationId": "getMovieByID",
         "responses": {
@@ -406,7 +406,7 @@
           "Admins"
         ],
         "summary": "updates Movie info",
-        "description": "This path will update the movie belonging to that id",
+        "description": "This path will update the movie belonging to that id. Will also check if the imdb record needs to be updated too",
         "operationId": "updateMovie",
         "requestBody": {
           "description": "Update Movie",
@@ -717,6 +717,10 @@
           "Gender": {
             "type": "string",
             "example": "Male"
+          },
+          "link": {
+            "type": "string",
+            "example": "http://localhost:3000/api/v1/actors/"
           }
         }
       },
@@ -787,11 +791,13 @@
       "movieByID": {
         "required": [
           "Genre",
+          "IMDB",
           "Language",
           "Runtime",
           "Title",
           "Year",
-          "imdbId"
+          "imdbId",
+          "link"
         ],
         "type": "object",
         "properties": {
@@ -818,6 +824,12 @@
           },
           "imdbId": {
             "type": "string"
+          },
+          "IMDB": {
+            "type": "object"
+          },
+          "link": {
+            "type": "string"
           }
         },
         "example": {
@@ -828,7 +840,9 @@
           "Runtime": 123,
           "Language": "English",
           "modified": "2023-03-17 00:03:17",
-          "imdbId": "tt3794354"
+          "imdbId": "tt3794354",
+          "IMDB": "[object Object]",
+          "link": "http://localhost:3000/api/v1/movies/"
         }
       },
       "allReviews": {
@@ -898,6 +912,9 @@
           },
           "modified": {
             "type": "string"
+          },
+          "link": {
+            "type": "string"
           }
         },
         "example": [
@@ -906,7 +923,8 @@
             "MovieID": 1,
             "Reviewer": "METACRITIC",
             "Rating": 7,
-            "modified": "2023-03-17 00:03:17"
+            "modified": "2023-03-17 00:03:17",
+            "link": "http://localhost:3000/api/v1/Reviews/"
           }
         ]
       },
