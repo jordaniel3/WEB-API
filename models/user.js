@@ -40,4 +40,8 @@ exports.updateUser = async function updateUser(id,user) {
 	let data = await db.run_query(query, [user,id]);
 	return data;
 } 
-
+exports.findByUsername = async function getByUsername(username) {
+	const query = "SELECT * FROM Users WHERE username = ?;";
+	const user = await db.run_query(query, username);
+	return user;
+   }

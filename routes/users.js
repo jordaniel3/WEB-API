@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const model = require('../models/user');
+const logger = require('../Logging/logger');
 const jwt = require('jsonwebtoken')
 const can = require('../permissions/users');
 const auth = require('../controllers/auth');
@@ -14,6 +15,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 router.post('/login', bodyParser(), login);
+router.get('/logout', logout);
 router.get('/',auth, getAll);
 router.post('/', bodyParser(),validateUser, createUser);
 router.get('/:id([0-9]{1,})',auth, getById);
@@ -27,6 +29,7 @@ async function getAll(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 	ctx.status = 403;
+	logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		ctx.status = 200;
 	const result = await model.getAll();
@@ -62,6 +65,7 @@ async function login(ctx) {
 			ctx.body = {
 				message: `logged in ${ctx.request.body.username} `
 			}
+			logger.info(`User ${ctx.request.body.username} has logged in`)
 		}
 		else{
 			ctx.status=400;
@@ -72,6 +76,21 @@ async function login(ctx) {
 	}
 	}
 }
+async function logout(ctx){
+	await fs.writeFile(
+		"fakecookie.json",
+		JSON.stringify({Authorisation:` `}),
+		(err) => {
+			if (err) throw err;
+			
+			
+			
+		}
+		
+	);
+	ctx.body = {message: "logged out"}
+	logger.info(`User logged out`)
+}
 async function getById(ctx) {
 	let id = parseInt(ctx.params.id);
 	console.log(id)
@@ -79,6 +98,7 @@ async function getById(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 	ctx.status = 403;
+	logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 
@@ -99,6 +119,7 @@ async function getById(ctx) {
 			ctx.body = data;
 			ctx.set('Last-Modified', new Date(data.modified).toUTCString());       
 			ctx.set('Etag', etag(JSON.stringify(ctx.body)));
+			logger.info(`User record ${id} was accessed by ${ctx.state.user.username}`)
 	
 		}
 	}
@@ -119,6 +140,7 @@ async function createUser(ctx) {
 		ctx.body = {
 			ID: result.insertId
 		}
+		logger.info(`User record was created by ${ctx.state.user.firstName} ${ctx.state.user.lastName}`)
 
 	}else{
 		console.log(result)
@@ -134,6 +156,7 @@ async function updateUser(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 	ctx.status = 403;
+	logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		const body = ctx.request.body;
 	body.password = await bcrypt.hash(body.password, saltRounds);
@@ -146,6 +169,7 @@ async function updateUser(ctx) {
 		};
 	}else{ctx.status=200}
 	console.log(update,",###")
+	logger.info(`User record ${id} was updated by ${ctx.state.user.username}`)
 		
 	}
 	
@@ -158,10 +182,13 @@ async function deleteUser(ctx) {
 	console.log(ctx.headers)
 	if (!permission.granted) {
 	ctx.status = 403;
+	logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
+		logger.info(`User record ${id} was deleted by ${ctx.state.user.username}`)
 		ctx.status = 410;
 		let users = await model.deleteUser(id);
 		ctx.body = {message:"user deleted"}
+		
 
 		
 	}

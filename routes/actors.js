@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
+const logger = require('../Logging/logger');
 const model = require('../models/actors');
 const etag = require('etag');
 const can = require('../permissions/actors');
@@ -17,8 +18,6 @@ router.put('/:id([0-9]{1,})', bodyParser(),validateActor,auth, updateActor);
 router.del('/:id([0-9]{1,})',auth, deleteActor);
 
 async function getAll(ctx) {
-	
-	console.log("pass")
 
 	let actors = await model.getAll();
 
@@ -67,18 +66,21 @@ async function createActor(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		const body = ctx.request.body;
 
 		let result = await model.add(body);
 
 		if (result) {
+			
 
 			ctx.status = 201;
 
 			ctx.body = {
 				ID: result.insertId
 			}
+			logger.info(`Actor ${result.insertId} created by ${ctx.state.user.username}`)
 
 		}
 	}
@@ -94,6 +96,7 @@ async function updateActor(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 		let update = await model.updateActor(id,ctx.request.body.FirstName,ctx.request.body.LastName,ctx.request.body.Gender)
@@ -105,6 +108,7 @@ async function updateActor(ctx) {
 			ctx.body = {
 				message:"Record Updated"
 			}
+			logger.info(`Actor ${id} updated by ${ctx.state.user.username}`)
 
 		}else{
 			ctx.status=304;
@@ -121,6 +125,7 @@ async function deleteActor(ctx) {
 	console.log(permission)
 	if (!permission.granted) {
 		ctx.status = 403;
+		logger.info(`${ctx.state.user.username} was denied access`)
 	} else {
 		
 		
@@ -133,6 +138,7 @@ async function deleteActor(ctx) {
 			ctx.body = {
 				message:"Record Deleted"
 			}
+			logger.info(`Actor ${id} deleted by ${ctx.state.user.username}`)
 
 		}else{
 			ctx.status = 304;
