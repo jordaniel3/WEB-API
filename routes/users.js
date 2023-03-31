@@ -137,13 +137,14 @@ async function createUser(ctx) {
 	let result = await model.add(body);
 
 	if (result) {
-
+		console.log(body)
 		ctx.status = 201;
 
 		ctx.body = {
 			ID: result.insertId
 		}
-		logger.info(`User record was created by ${ctx.state.user.firstName} ${ctx.state.user.lastName}`)
+		
+		logger.info(`User record was created by ${ctx.request.body.firstName} ${ctx.request.body.lastName}`)
 
 	}else{
 		console.log(result)

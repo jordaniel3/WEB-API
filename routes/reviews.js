@@ -48,7 +48,9 @@ async function getById(ctx) {
 			if (modified < since) {
 				ctx.status = 304;
 			}
-		}
+		}else{
+			ctx.status=200;
+			}
 		data['link']="http://localhost:3000/api/v1/reviews/"
 
 		ctx.body = {xml :xmlparser.parse("review",data),
@@ -105,7 +107,7 @@ async function updateReview(ctx) {
 
 		if (update.affectedRows!=0) {
 
-			ctx.status = 410;
+			ctx.status = 201;
 
 			ctx.body = {
 				message:"Record Updated"

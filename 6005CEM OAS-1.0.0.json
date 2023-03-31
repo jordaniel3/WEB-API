@@ -185,7 +185,7 @@
         "description": "This path will delete the user belonging to that id (Users can only del their own id path)\n",
         "operationId": "deleteUserByID",
         "responses": {
-          "140": {
+          "410": {
             "description": "User deleted"
           },
           "403": {

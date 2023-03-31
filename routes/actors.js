@@ -49,7 +49,9 @@ async function getById(ctx) {
 			if (modified < since) {
 				ctx.status = 304;
 			}
-		}
+		}else{
+			ctx.status=200;
+			}
 		data['link']="http://localhost:3000/api/v1/actors/"
 		ctx.body = {xml :xmlparser.parse("actor",data),
 		json: data};

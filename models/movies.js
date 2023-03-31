@@ -17,6 +17,8 @@ exports.add = async function add(movie) {
 	return data;
 } //delete a movie in the database 
 exports.deleteMovie = async function deleteMovie(id) {
+	let setNullquery = "DELETE FROM OMDB WHERE movieId = ?;";
+	let setNull = await db.run_query(setNullquery, id);
 	let query = "DELETE FROM Movies WHERE id = ?;";
 	let data = await db.run_query(query, id);
 	return data;

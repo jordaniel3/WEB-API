@@ -54,8 +54,9 @@ async function getById(ctx) {
 			if (modified < since) {
 				ctx.status = 304;
 			}
-		}
+		}else{
 		ctx.status=200;
+		}
 		if (data.imdbId){
 			const imdbResult = await getFromCache(data.imdbId)
 			data['IMDB']=imdbResult

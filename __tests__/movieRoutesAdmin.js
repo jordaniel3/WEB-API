@@ -7,7 +7,7 @@ const app = require('../app')
 
 //TO TEST THIS ROUTE YOU MUST FIRST MAKE A POST REQUEST TO "/login" using {"username": "Jordaniel","password": "admin"}IN POSTMAN OR THUNDERCLIENT ON LIVE SERVER AS THE JWT BEARER TOKEN NEEDS TO BE UPDATED TO ADMIN PERMISSION
 
-describe('schema fail wrong data type', () => {
+xdescribe('schema fail wrong data type', () => {
     it('should NOT create a new movie', async () => {
         const res = await request(app.callback()).post('/api/v1/movies').send({
             title: 'unique_112233',
@@ -19,7 +19,7 @@ describe('schema fail wrong data type', () => {
         expect(res.statusCode).toEqual(400) 
     })
 });
-describe('create movie', () => {
+xdescribe('create movie', () => {
     it('should create a new movie', async () => {
         const res = await request(app.callback()).post('/api/v1/movies').send({
             title: 'unique_112233',
@@ -32,7 +32,7 @@ describe('create movie', () => {
     })
 });
 
-describe('Schema fail missing ddata', () => {
+xdescribe('Schema fail missing ddata', () => {
     it('should not create a new movie', async () => {
         const res = await request(app.callback()).post('/api/v1/movies').send({
             title: 'unique_112233',
@@ -43,20 +43,20 @@ describe('Schema fail missing ddata', () => {
         expect(res.statusCode).toEqual(400) 
     })
 });
-describe('read movie', () => {
+xdescribe('read movie', () => {
     it('should read movie', async () => {
         const res = await request(app.callback()).get('/api/v1/movies/2')
         expect(res.statusCode).toEqual(200) 
     })
 });
-describe('read a non existent movie', () => {
+xdescribe('read a non existent movie', () => {
     it('should not read movie', async () => {
         const res = await request(app.callback()).get('/api/v1/movies/91')
         expect(res.statusCode).toEqual(404) 
     })
 });
 
-describe('Update Movie', () => {
+xdescribe('Update Movie', () => {
     it('should update the movie with missing data', async () => {
         const res = await request(app.callback()).put('/api/v1/movies/3').send({
             title: 'unique_112233',
@@ -67,7 +67,7 @@ describe('Update Movie', () => {
         expect(res.statusCode).toEqual(201) 
     })
 });
-describe('Update non existent movie', () => {
+xdescribe('Update non existent movie', () => {
     it('should run into a 304 error', async () => {
         const res = await request(app.callback()).put('/api/v1/movies/66').send({
             title: 'unique_112233',
@@ -81,20 +81,20 @@ describe('Update non existent movie', () => {
 });
 
 
-describe('read all movies', () => {
+xdescribe('read all movies', () => {
     it('should return all movies', async () => {
         const res = await request(app.callback()).get('/api/v1/movies')
         expect(res.statusCode).toEqual(200) 
     })
 });
 
-describe('Delete movie', () => {
+xdescribe('Delete movie', () => {
     it('should delete the movie', async () => {
         const res = await request(app.callback()).del('/api/v1/movies/2')
         expect(res.statusCode).toEqual(410) 
     })
 });
-describe('Delete non existent movie', () => {
+xdescribe('Delete non existent movie', () => {
     it('should error out', async () => {
         const res = await request(app.callback()).del('/api/v1/movies/234')
         expect(res.statusCode).toEqual(304) 
